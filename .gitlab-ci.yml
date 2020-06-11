@@ -1,0 +1,43 @@
+stages:
+  - build
+
+variables:
+  CGO_ENABLED: 0
+  GOARCH: amd64
+  REPO_NAME: github.com/egeneralov/pv-exporter
+
+.build: &build
+  image: golang:1.14.2-alpine
+  stage: build
+  before_script:
+    - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+    - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+    - cd $GOPATH/src/$REPO_NAME
+    - export GO111MODULE=on
+  script:
+    - ls -lha
+    - go mod download
+    - go build -a -v -installsuffix cgo -ldflags="-w -s" -o ${CI_PROJECT_DIR}/pv-exporter-${GOOS}-${GOARCH}
+  artifacts:
+    paths:
+      - ${CI_PROJECT_DIR}/pv-exporter-${GOOS}-${GOARCH}
+    when: on_success
+    expire_in: 180 days
+
+linux:
+  variables:
+    GOOS: linux
+  <<: *build
+
+docker:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_BUILDKIT: 1
+  script:
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${CI_REGISTRY}"
+    - docker build --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}" .
+    - docker push "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}"
+
