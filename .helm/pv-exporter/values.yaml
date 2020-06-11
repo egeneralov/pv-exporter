@@ -1,0 +1,52 @@
+# Default values for pv-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: registry.gitlab.com/egeneralov/pv-exporter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart version.
+  tag: master-366f1c96d82dea51f5bfd2047131f7297804c8c6
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations:
+  "prometheus.io/scrape": "true"
+  "prometheus.io/port": "9102"
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: false
+  runAsUser: 0
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations:
+  - operator: "Exists"
+
+affinity: {}
