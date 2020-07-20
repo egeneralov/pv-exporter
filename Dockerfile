@@ -1,7 +1,5 @@
 FROM golang:1.14.2
 
-RUN apk add --no-cache ca-certificates
-
 ENV \
   GO111MODULE=on \
   CGO_ENABLED=0 \
@@ -19,7 +17,6 @@ RUN go build -v -installsuffix cgo -ldflags="-w -s" -o /go/bin/pv-exporter .
 
 FROM debian:buster
 
-RUN apk add --no-cache ca-certificates
 USER nobody
 ENV PATH='/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 CMD /go/bin/pv-exporter
