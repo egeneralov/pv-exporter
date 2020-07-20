@@ -1,4 +1,4 @@
-FROM golang:1.14.2-alpine
+FROM golang:1.14.2
 
 RUN apk add --no-cache ca-certificates
 
@@ -17,7 +17,7 @@ ADD . .
 RUN go build -v -installsuffix cgo -ldflags="-w -s" -o /go/bin/pv-exporter .
 
 
-FROM alpine
+FROM debian:buster
 
 RUN apk add --no-cache ca-certificates
 USER nobody
