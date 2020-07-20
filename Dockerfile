@@ -17,7 +17,6 @@ RUN go build -v -installsuffix cgo -ldflags="-w -s" -o /go/bin/pv-exporter .
 
 FROM debian:buster
 
-USER nobody
 ENV PATH='/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 CMD /go/bin/pv-exporter
 
