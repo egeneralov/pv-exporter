@@ -28,7 +28,7 @@ func Round(val float64, roundOn float64, places int) (newVal float64) {
 func DirSize(path string) int64 {
 	log.Debugf("dirsize.DirSize(\"%v\")", path)
 
-	sizes := make(chan int64)
+	sizes := make(chan int64, 1000)
 
 	readSize := func(path string, file os.FileInfo, err error) error {
 		if err != nil || file == nil {
